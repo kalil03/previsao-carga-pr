@@ -1,0 +1,144 @@
+%%%% utfpr-thesis.tex
+%%%% Adaptado para a Proposta de Projeto (Etapa 1) - Ciência de Dados UTFPR
+\documentclass[
+  a4paper,
+  10pt,
+  oneside,
+  english,
+  brazilian,
+]{memoir}
+
+%% Pacotes utilizados
+\usepackage[
+  CoverBG   = Off,
+  PageNum   = None,
+]{utfpr-thesis}
+
+%% Desativação de Capa e Pré-Textuais (proposta sem capa)
+\makeatletter
+\renewcommand*{\@maketitle}{}
+\renewcommand*{\maketitle}{}
+\renewenvironment{titlingpage}{}{}
+\renewcommand*{\PreTextual}{}
+\makeatother
+
+%% Informações do documento
+\Title{%
+  Previsão da Carga Máxima Diária do Paraná e Relação entre Clima, Demanda e Interrupções no Fornecimento%
+}{%
+  Daily Peak Load Forecasting in Paraná and Relationship between Climate, Demand and Supply Interruptions%
+}
+
+\Student{1}{%
+  Gender   = {Male},
+  Forename = {Kalil},
+  Surname  = {Nege},
+  Email    = {kalilnege40@gmail.com},
+}
+
+\AcademicDegreeOption[4]%% Bacharelado
+\Course{Ciência da Computação}{Computer Science}
+\Department{%
+  Departamento Acadêmico de Computação%
+}{%
+  Academic Department of Computing%
+}
+\Campus{Campo Mourão}
+\Dates{2026}{11}{09}
+
+%% Ativa conteúdo do corpo
+\NewDocumentEnvironment{OverleafFreePlan}{ }{}{}
+
+%% Ajustes de espaçamento para caber rigorosamente em 2 páginas
+\setulmarginsandblock{20mm}{20mm}{*}
+\setlrmarginsandblock{20mm}{20mm}{*}
+\checkandfixthelayout
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+
+\setsecheadstyle{\bfseries\normalsize}
+\setsubsecheadstyle{\bfseries\small}
+\setbeforesecskip{-6pt}
+\setaftersecskip{3pt}
+\setbeforesubsecskip{-4pt}
+\setaftersubsecskip{2pt}
+
+\begin{document}
+\Textual
+
+\begin{center}
+  {\bfseries\normalsize UNIVERSIDADE TECNOLÓGICA FEDERAL DO PARANÁ (UTFPR)}\\[0.15em]
+  {\footnotesize DEPARTAMENTO ACADÊMICO DE COMPUTAÇÃO --- CIÊNCIA DE DADOS (PROF. DR. EDUARDO PENA)}\\[0.5em]
+  {\bfseries\large Previsão da Carga Máxima Diária do Paraná e Relação entre Clima, Demanda e Interrupções no Fornecimento}\\[0.35em]
+  {\small\textbf{Integrantes:} Kalil Nege (RA 2409020); [demais integrantes] \quad\textbar\quad \textbf{Etapa 1:} Definição do Problema}\\[0.2em]
+  {\footnotesize\textbf{Git:} \url{https://github.com/kalil03/previsao-carga-pr.git}}
+\end{center}
+\vspace{-0.4em}
+\hrule
+\vspace{0.4em}
+
+\section*{1. Contexto, Motivação e Perguntas de Pesquisa}
+
+Desde a privatização da Copel (concluída em agosto de 2023), intensificou-se o debate público sobre falhas no fornecimento de energia elétrica no Paraná. A previsão de carga máxima é fundamental para o planejamento operativo do sistema elétrico, sendo governada principalmente por fatores meteorológicos e dinâmicas calendáricas. O projeto possui duas frentes de trabalho: \textbf{(i) Frente Preditiva (P1):} prever a carga máxima diária do subsistema Paraná no dia seguinte (D+1); \textbf{(ii) Frente Explicativa/Associativa (P2):} investigar a associação entre extremos meteorológicos, picos de consumo e o volume de interrupções na distribuição da Copel, analisando se esse padrão mudou após agosto de 2023.
+
+\begin{itemize}[leftmargin=12pt, itemsep=-2pt, topsep=1pt]
+  \item \textbf{P1 (Preditiva):} É possível prever a carga máxima diária do subsistema Paraná em D+1 com erro estatisticamente menor que o de baselines temporais históricos, integrando variáveis de clima e calendário?
+  \item \textbf{P2 (Explicativa):} Dias de clima extremo ou de alta demanda concentram mais interrupções na distribuição? Essa dinâmica se alterou no período posterior a agosto de 2023?
+\end{itemize}
+
+\section*{2. Hipóteses Testáveis}
+
+\begin{itemize}[leftmargin=12pt, itemsep=-2pt, topsep=1pt]
+  \item \textbf{H1 (Demanda $\times$ Temperatura):} A carga máxima tem relação não linear (formato em ``U'') com a temperatura: atinge mínimo em temperaturas amenas ($\sim$18°C--22°C) e eleva-se tanto no calor (refrigeração) quanto no frio (aquecimento).
+  \item \textbf{H2 (Efeito Calendário):} Feriados nacionais e estaduais, pontes e o período entre Natal e Ano Novo provocam redução significativa na carga máxima diária em relação a dias úteis equivalentes, mesmo controlando por temperatura e mês.
+  \item \textbf{H3 (Clima $\times$ Interrupções):} Precipitação intensa e rajadas fortes de vento concentram maior volume de interrupções no fornecimento e maior número de consumidores afetados.
+  \item \textbf{H4 (Pós-Privatização --- Exploratória):} A sensibilidade das interrupções a extremos climáticos difere antes e depois de agosto de 2023. \textit{Hipótese estritamente associativa, sem pretensão causal, controlando por fatores regulatórios e sazonais.}
+\end{itemize}
+
+\section*{3. Recorte, Granularidade e Horizonte}
+
+\begin{itemize}[leftmargin=12pt, itemsep=-2pt, topsep=1pt]
+  \item \textbf{Variável-Alvo e Granularidade:} Carga máxima diária (MW) do subsistema Paraná, agregada a partir das medições semi-horárias (48 leituras/dia) do ONS. A granularidade diária alinha-se ao horizonte de previsão e à resolução temporal das previsões meteorológicas.
+  \item \textbf{Horizonte de Previsão (P1):} D+1. A previsão para o dia seguinte é elaborada ao encerramento do dia D, utilizando rigorosamente apenas informações consolidadas até então, prevenindo vazamento de dados (\textit{data leakage}).
+\end{itemize}
+
+\section*{4. Fontes de Dados Selecionadas e Integração}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{|l|c|c|X|}
+\hline
+\textbf{Fonte} & \textbf{Período} & \textbf{Granularidade} & \textbf{Variáveis e Aplicação no Projeto} \\
+\hline
+\textbf{ONS (Carga PR)} & 2016--2026 & Semi-horária & Carga verificada área \texttt{PR} (máx. diário). Tratamento das quebras MMGD (29/04/2023) e usinas não supervisionadas (02/03/2021). \\
+\hline
+\textbf{Open-Meteo ERA5} & 2016--pres. & Horária/Diária & Temperatura (máx/mín/méd), chuva, vento e umidade para Curitiba, Londrina, Maringá, Cascavel e Ponta Grossa (média ponderada). \\
+\hline
+\textbf{Open-Meteo NWP} & 2021--pres. & Diária & Hindcast de modelos operacionais (ECMWF/GFS) para simular o cenário operacional realista de previsão para D+1. \\
+\hline
+\textbf{ANEEL Distribuição} & 2017--2025 & Evento/Mensal & Microdados de interrupções na área Copel-DIS (data/hora, causa, afetados, duração) e indicadores DEC/FEC por conjunto elétrico. \\
+\hline
+\textbf{ONS CIPER \& Feriados} & 2016--2026 & Diária/Mensal & Indicador de interrupções na transmissão do PR; feriados nacionais/estaduais (\texttt{holidays}), Carnaval, pontes e recesso de fim de ano. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\section*{5. Planejamento da Previsão (P1) e Análise Associativa (P2)}
+
+\subsection*{Cenários de Clima na Modelagem Preditiva (P1)}
+A previsão é feita no fim do dia D sob três cenários comparativos: \textbf{(a) Sem clima:} defasagens da carga (D, D-1, D-7, médias móveis de 7 e 14 dias) e calendário; \textbf{(b) Clima observado em D:} persistência das medições climáticas do dia D (defasagem de 1 dia; cenário conservador); \textbf{(c) Clima previsto D+1:} previsões hindcast NWP do Open-Meteo (cenário operacional realista, avaliado no período disponível desde 2021).
+
+\subsection*{Baselines, Modelos Obrigatórios e Validação}
+\begin{itemize}[leftmargin=12pt, itemsep=-2pt, topsep=1pt]
+  \item \textbf{Baselines:} B1 (carga do mesmo dia da semana anterior, D-7) e B2 (média móvel dos últimos 4 mesmos dias da semana).
+  \item \textbf{Modelos Supervisionados:} Regressão Linear com termo quadrático de temperatura ($T^2$), Random Forest, LightGBM e TabPFN (amostra temporal justificada).
+  \item \textbf{Validação Temporal e Métricas:} Validação cruzada com janela expansiva (\textit{expanding window}) para ajuste de hiperparâmetros. O período de 2025 a 2026 é mantido estritamente isolado como teste final (avaliação de extrapolação). Métricas: MAE, RMSE e MAPE, com teste de Diebold-Mariano contra os baselines.
+\end{itemize}
+
+\subsection*{Modelagem de Interrupções (P2) e Limitações Declaradas}
+\begin{itemize}[leftmargin=12pt, itemsep=-2pt, topsep=1pt]
+  \item \textbf{Modelos de Contagem (P2):} Regressão Poisson e Binomial Negativa para contagem diária de interrupções e consumidores afetados, controlando por dia da semana, mês e tendência, com termos de interação entre eventos climáticos extremos (percentil 95 de chuva e vento) e o período pós-agosto de 2023.
+  \item \textbf{Limitações Metodológicas:} (1) Natureza estritamente observacional e associativa (sem causalidade; controle da mudança regulatória da ANEEL pela REN 1.000/2021 em jan/2022); (2) Quebras metodológicas do ONS em 2021 e 2023 tratadas com variáveis indicadoras de intervenção; (3) Cinco polos urbanos representam aproximação populacional da área de concessão.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,41 @@
+# Ambientes virtuais
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Dados brutos e intermediários volumosos (manter apenas scripts de download)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+*.parquet
+*.csv
+*.zip
+
+# Checkpoints e notebooks temporários
+.ipynb_checkpoints/
+*.egg-info/
+.pytest_cache/
+
+# IDE e sistema operacional
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários e de compilação
+*.log
+*.aux
+*.out
+*.toc
+*.mw
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+tmp/
+
+# Templates e materiais locais de apoio
+_Federal_University_of_Technology___Paraná__UTFPR_Thesis/
